@@ -31,7 +31,7 @@ function goToLogin() {
           <div class="max-w-md mx-auto md:max-w-2xl">
             <!-- Main heading -->
             <h1
-              class="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white leading-tight mb-8 text-left"
+              class="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white leading-tight text-left"
             >
               Find the
               <br />
@@ -44,7 +44,7 @@ function goToLogin() {
 
             <!-- Subtitle -->
             <div
-              class="text-4xl sm:text-5xl mt-12 md:text-6xl lg:text-7xl text-white font-medium space-y-2 mb-12 text-left"
+              class="text-2xl sm:text-5xl mt-4 md:text-6xl lg:text-7xl text-white font-medium space-y-2 mb-12 text-left"
             >
               <p>See jobs</p>
               <p>Apply fast</p>
@@ -57,7 +57,7 @@ function goToLogin() {
         <div class="px-6 pb-8 sm:px-8 md:px-12">
           <div class="max-w-md mx-auto md:max-w-2xl">
             <button
-              class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-5 px-8 rounded-full text-xl sm:text-2xl transition-colors duration-300 shadow-lg"
+              class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-6 rounded-full text-xl sm:text-2xl transition-colors duration-300 shadow-lg"
               @click="goToLogin"
             >
               Explore Jobs
