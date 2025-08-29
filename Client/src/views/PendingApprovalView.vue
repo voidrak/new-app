@@ -1,11 +1,14 @@
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
 const router = useRouter();
 const receiptImage = ref(null);
 const isUploading = ref(false);
 const isSubmitted = ref(false);
+const accountNumber = ref("");
+const phoneNumber = ref("");
+const telegram = ref("");
 
 // Cloudinary configuration
 const CLOUDINARY_CLOUD_NAME = "dqxy77qks";
@@ -14,6 +17,10 @@ const CLOUDINARY_UPLOAD_PRESET = "canada_app_uploads";
 const handleBackToLogin = () => {
   router.push("/login");
 };
+
+onMounted(() => {
+  getCbeAccount();
+});
 
 const uploadToCloudinary = async (file) => {
   if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
@@ -60,6 +67,30 @@ const uploadToCloudinary = async (file) => {
     }
   }
 };
+
+async function getCbeAccount() {
+  try {
+    const response = await fetch(
+      "https://canada.rohatechs.com/api/cbe-account"
+    );
+
+    const data = await response.json();
+    if (response.ok && data.account_number) {
+      accountNumber.value = data.account_number;
+      phoneNumber.value = data.phone_number_1 || "";
+      telegram.value = data.telegram || "";
+    } else {
+      accountNumber.value = "Unavailable";
+      phoneNumber.value = "Unavailable";
+      telegram.value = "@CanadaAppSupport";
+    }
+  } catch (error) {
+    console.error("Error fetching CBE account:", error);
+    accountNumber.value = "1000232902397";
+    phoneNumber.value = "0929782484";
+    telegram.value = "@CanadaAppSupport";
+  }
+}
 
 const pickImage = () => {
   const input = document.createElement("input");
@@ -197,6 +228,12 @@ const handleSubmitReceipt = async () => {
           <h2 class="text-xl font-semibold text-gray-900 text-center mb-6">
             Upload Payment Receipt
           </h2>
+
+          <!-- Account Info -->
+          <div class="bg-gray-50 rounded-lg p-4 mt-4 text-center">
+            <p class="font-semibold text-red-600 mb-1">CBE Account Number:</p>
+            <p class="text-lg font-bold text-gray-800">{{ accountNumber }}</p>
+          </div>
 
           <div v-if="receiptImage" class="text-center">
             <img

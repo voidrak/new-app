@@ -230,8 +230,6 @@ async function handleApply(jobTitle, salary) {
   // Show confirmation dialog
   const confirmed = confirm(
     `Are you sure you want to apply for "${jobTitle}"?\n\n` +
-      `Salary: ${salary}\n` +
-      `Applications used: ${limitStatus.current}/${limitStatus.max}\n\n` +
       `After applying, please send "hi" to admin via chat to ask about the application fee.`
   );
 
@@ -275,9 +273,7 @@ async function submitApplication(jobTitle, salary) {
     if (response.ok && data.success) {
       alert(
         "✅ Application Submitted Successfully!\n\n" +
-          "Your job application has been submitted.\n\n" +
-          '📱 Next Step: Please send "hi" to admin via chat to ask about the application fee and payment process.\n\n' +
-          '💬 Go to Chat → Send "hi" to admin'
+          '💬 Go to Chat → Send "hi" to admin to ask about the application fee and payment process.\n\n'
       );
 
       // Add the new application to local array immediately for instant UI update

@@ -65,12 +65,10 @@ async function onLogin() {
       localStorage.setItem("userToken", result.data.token);
       localStorage.setItem("userData", JSON.stringify(result.data.user));
 
-      // Redirect based on user type and status
+      // Redirect based on user type
       const user = result.data.user;
       if (user.is_admin || user.role === "admin") {
         router.push("/admin-home");
-      } else if (user.status === "pending") {
-        router.push("/pending-approval");
       } else {
         router.push("/user-home");
       }
@@ -108,6 +106,13 @@ async function onLogin() {
     class="min-h-screen bg-gradient-to-b from-red-600 to-red-100 flex flex-col items-center justify-start px-2 py-16"
   >
     <!-- Header -->
+    <div class="w-full max-w-md mx-auto">
+      <div class="bg-red-600 rounded-b-3xl pt-4 pb-2 px-4 flex items-center">
+        <button @click="goBack" class="text-white text-lg font-bold mr-2">
+          &larr; Back
+        </button>
+      </div>
+    </div>
     <!-- Card -->
     <div class="w-full max-w-md mx-auto -mt-8">
       <div
@@ -122,11 +127,13 @@ async function onLogin() {
             >FIND YOUR DREAM JOB</span
           >
         </div>
-
+        <div class="mt-6 mb-2 text-gray-500 text-center text-base">
+          Fill The Below Information to Log In
+        </div>
         <div class="mb-4 text-xl font-semibold text-red-600 text-center">
           Login Account
         </div>
-        <form class="w-full text-sm space-y-6" @submit.prevent="onLogin">
+        <form class="w-full space-y-6" @submit.prevent="onLogin">
           <div>
             <label class="block text-gray-500 font-medium mb-1" for="phone"
               >Phone Number</label
@@ -136,7 +143,7 @@ async function onLogin() {
               @input="clearFieldError('phone')"
               id="phone"
               type="tel"
-              class="w-full border-b border-gray-300 bg-transparent px-2 py-2 text-sm focus:outline-none focus:border-red-400"
+              class="w-full border-b border-gray-300 bg-transparent px-2 py-2 text-lg focus:outline-none focus:border-red-400"
               placeholder="Phone Number"
             />
             <span v-if="errors.phone" class="text-red-500 text-xs mt-1 block">{{
@@ -152,7 +159,7 @@ async function onLogin() {
               @input="clearFieldError('password')"
               id="password"
               type="password"
-              class="w-full border-b border-gray-300 bg-transparent px-2 py-2 focus:outline-none focus:border-red-400"
+              class="w-full border-b border-gray-300 bg-transparent px-2 py-2 text-lg focus:outline-none focus:border-red-400"
               placeholder="Password"
             />
             <span
@@ -161,7 +168,9 @@ async function onLogin() {
               >{{ errors.password }}</span
             >
           </div>
-
+          <div class="text-right text-xs text-gray-400 mt-1 mb-2">
+            In case you forget password ?
+          </div>
           <span
             v-if="errors.general"
             class="text-red-500 text-xs text-center block mb-2"
@@ -170,7 +179,7 @@ async function onLogin() {
           <button
             type="submit"
             :disabled="loading"
-            class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-full transition-colors duration-300 mt-2 mb-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-3 rounded-full text-lg transition-colors duration-300 mt-2 mb-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <span v-if="loading">Logging in...</span>
             <span v-else>LOG IN</span>

@@ -100,7 +100,7 @@ const deleteApplication = async (applicationId) => {
   try {
     const token = localStorage.getItem("userToken");
     const response = await fetch(
-      `https://canada.rohatechs.com/api/admin/job-applications/${applicationId}`,
+      `https://canada.rohatechs.com/api/job-applications/${applicationId}`,
       {
         method: "DELETE",
         headers: {
