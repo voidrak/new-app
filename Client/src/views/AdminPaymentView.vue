@@ -59,40 +59,15 @@ const loadPayments = async () => {
   }
 };
 
-const approvePayment = async (paymentId) => {
-  try {
-    const token = localStorage.getItem("userToken");
-    const response = await fetch(
-      `https://canada.rohatechs.com/api/admin/payments/${paymentId}/approve`,
-      {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      }
-    );
-
-    const data = await response.json();
-    if (response.ok && data.success) {
-      alert("Payment approved successfully!");
-      await loadPayments(); // Reload payments
-    } else {
-      alert("Failed to approve payment: " + (data.message || "Unknown error"));
-    }
-  } catch (error) {
-    alert("Error approving payment: " + error.message);
+const approvePayment = async (payment) => {
+  if (!confirm("Are you sure you want to approve this payment?")) {
+    return;
   }
-};
-
-const rejectPayment = async (paymentId) => {
-  const reason = prompt("Please provide a reason for rejection:");
-  if (!reason) return;
 
   try {
     const token = localStorage.getItem("userToken");
     const response = await fetch(
-      `https://canada.rohatechs.com/api/admin/payments/${paymentId}/reject`,
+      `https://canada.rohatechs.com/api/admin/payments/${payment.id}/approve`,
       {
         method: "POST",
         headers: {
@@ -100,19 +75,63 @@ const rejectPayment = async (paymentId) => {
           Authorization: `Bearer ${token}`,
           Accept: "application/json",
         },
-        body: JSON.stringify({ reason }),
+        body: JSON.stringify({
+          user_id: payment.user_id,
+        }),
       }
     );
 
     const data = await response.json();
     if (response.ok && data.success) {
-      alert("Payment rejected successfully!");
+      alert("✅ Payment approved successfully!");
       await loadPayments(); // Reload payments
     } else {
-      alert("Failed to reject payment: " + (data.message || "Unknown error"));
+      alert(
+        "❌ Failed to approve payment: " + (data.message || "Unknown error")
+      );
+      console.error("API Error:", data);
     }
   } catch (error) {
-    alert("Error rejecting payment: " + error.message);
+    console.error("Error approving payment:", error);
+    alert("❌ Error approving payment: " + error.message);
+  }
+};
+
+const rejectPayment = async (payment) => {
+  const reason = prompt("Please provide a reason for rejection:");
+  if (!reason) return;
+
+  try {
+    const token = localStorage.getItem("userToken");
+    const response = await fetch(
+      `https://canada.rohatechs.com/api/admin/payments/${payment.id}/reject`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          reason,
+          user_id: payment.user_id,
+        }),
+      }
+    );
+
+    const data = await response.json();
+    if (response.ok && data.success) {
+      alert("✅ Payment rejected successfully!");
+      await loadPayments(); // Reload payments
+    } else {
+      alert(
+        "❌ Failed to reject payment: " + (data.message || "Unknown error")
+      );
+      console.error("API Error:", data);
+    }
+  } catch (error) {
+    console.error("Error rejecting payment:", error);
+    alert("❌ Error rejecting payment: " + error.message);
   }
 };
 
@@ -221,7 +240,9 @@ const closeImageModal = () => {
           <div class="mb-3">
             <p class="text-sm text-gray-600 mb-2">
               <strong>Submitted:</strong>
-              {{ new Date(payment.created_at).toLocaleDateString() }}
+              <span class="text-red-400 ml-2 font-semibold">{{
+                new Date(payment.created_at).toLocaleDateString()
+              }}</span>
             </p>
             <p class="text-sm text-gray-600 mb-2">
               <strong>Type:</strong>
@@ -257,13 +278,13 @@ const closeImageModal = () => {
 
           <div class="flex flex-col sm:flex-row gap-2 mt-3">
             <button
-              @click="approvePayment(payment.id)"
+              @click="approvePayment(payment)"
               class="bg-green-600 text-white px-3 py-2 md:px-4 md:py-2 rounded text-sm hover:bg-green-700 flex-1 sm:flex-none"
             >
               Approve
             </button>
             <button
-              @click="rejectPayment(payment.id)"
+              @click="rejectPayment(payment)"
               class="bg-red-600 text-white px-3 py-2 md:px-4 md:py-2 rounded text-sm hover:bg-red-700 flex-1 sm:flex-none"
             >
               Reject
